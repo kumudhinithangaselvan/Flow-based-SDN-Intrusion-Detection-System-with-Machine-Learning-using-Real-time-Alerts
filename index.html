@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="video-background">
+    <video autoplay muted loop id="bg-video">
+        <source src="{{ url_for('static', filename='images/bg.mp4') }}" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+</div>
+
+<div class="login-container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card login-card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="brand-section">
+                                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+                                <h2>SDN Intrusion Detection System</h2>
+                                <p class="lead">Advanced network security powered by machine learning</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="nav nav-tabs" id="authTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab">Login</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab">Register</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="authTabsContent">
+                                <div class="tab-pane fade show active" id="login" role="tabpanel">
+                                    <form action="{{ url_for('login') }}" method="POST">
+                                        <div class="form-group">
+                                            <label for="employee_id">Employee ID</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+                                                </div>
+                                                <input type="text" class="form-control" id="employee_id" name="employee_id" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="password">Password</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                                </div>
+                                                <input type="password" class="form-control" id="password" name="password" required>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                                    </form>
+                                </div>
+                                <div class="tab-pane fade" id="register" role="tabpanel">
+                                    <form action="{{ url_for('register') }}" method="POST">
+                                        <div class="form-group">
+                                            <label for="name">Full Name</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                </div>
+                                                <input type="text" class="form-control" id="name" name="name" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="reg_employee_id">Employee ID</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+                                                </div>
+                                                <input type="text" class="form-control" id="reg_employee_id" name="employee_id" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="reg_password">Password</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                                </div>
+                                                <input type="password" class="form-control" id="reg_password" name="password" required>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-success btn-block">Register</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

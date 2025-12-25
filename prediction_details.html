@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-background">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="dashboard-title">Prediction Details</h1>
+                <p class="dashboard-subtitle">Detailed analysis of your network flow</p>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4>Prediction Details</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="prediction-result {% if prediction.predicted_class == 'BENIGN' %}benign{% else %}attack{% endif %}">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h2>Predicted: "{{ prediction.predicted_class }}"</h2>
+                                    <p class="confidence">Confidence: {{ "%.2f"|format(prediction.confidence) }}%</p>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    {% if prediction.predicted_class == 'BENIGN' %}
+                                    <span class="badge badge-success badge-lg">Benign Traffic</span>
+                                    {% else %}
+                                    <span class="badge badge-danger badge-lg">Potential Attack</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h4>Top 3 Probable Classes</h4>
+                            <div class="progress-container">
+                                {% for class, prob in top_classes.items() %}
+                                <div class="progress-item">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>{{ class }}</span>
+                                        <span>{{ "%.2f"|format(prob) }}%</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar {% if class == 'BENIGN' %}bg-success{% else %}bg-danger{% endif %}" 
+                                             role="progressbar" style="width: {{ prob }}%;" 
+                                             aria-valuenow="{{ prob }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h4>Additional Information</h4>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <td>{{ prediction.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Input Type</th>
+                                    <td>{{ prediction.input_type }}</td>
+                                </tr>
+                                {% if prediction.flow_id %}
+                                <tr>
+                                    <th>Flow ID</th>
+                                    <td>{{ prediction.flow_id }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <th>User</th>
+                                    <td>{{ prediction.user.name }} ({{ prediction.user.employee_id }})</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <a href="{{ url_for('prediction_history') }}" class="btn btn-primary">Back to History</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

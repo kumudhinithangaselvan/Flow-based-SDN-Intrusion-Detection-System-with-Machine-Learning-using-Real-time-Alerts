@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-background">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="dashboard-title">Admin Dashboard</h1>
+                <p class="dashboard-subtitle">Network Security Overview</p>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h3>{{ total_traffic }}</h3>
+                                <p>Total Traffic</p>
+                            </div>
+                            <div class="stats-icon bg-primary">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h3>{{ benign_count }}</h3>
+                                <p>Benign Traffic</p>
+                            </div>
+                            <div class="stats-icon bg-success">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h3>{{ attack_count }}</h3>
+                                <p>Attack Traffic</p>
+                            </div>
+                            <div class="stats-icon bg-danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h3>{{ "%.1f"|format((attack_count / total_traffic * 100) if total_traffic > 0 else 0) }}%</h3>
+                                <p>Attack Ratio</p>
+                            </div>
+                            <div class="stats-icon bg-warning">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4>Total Traffic vs Attack Ratio</h4>
+                    </div>
+                    <div class="card-body">
+                        <img src="data:image/png;base64,{{ plot_url1 }}" class="img-fluid" alt="Traffic vs Attack Ratio">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4>Attack Type Distribution</h4>
+                    </div>
+                    <div class="card-body">
+                        {% if plot_url2 %}
+                        <img src="data:image/png;base64,{{ plot_url2 }}" class="img-fluid" alt="Attack Type Distribution">
+                        {% else %}
+                        <p class="text-center">No attack data available</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Live Intrusion Alerts -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+    <h4 class="mb-0"><i class="fas fa-bell"></i> Live Intrusion Alerts</h4>
+    <a href="{{ url_for('all_predictions') }}" class="btn btn-light btn-sm">View All Predictions</a>
+</div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Employee ID</th>
+                                        <th>Flow ID</th>
+                                        <th>Predicted Class</th>
+                                        <th>Confidence</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for prediction in recent_predictions %}
+                                    <tr>
+                                        <td>{{ prediction.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                        <td>{{ prediction.user.employee_id }}</td>
+                                        <td>{{ prediction.flow_id or 'N/A' }}</td>
+                                        <td>{{ prediction.predicted_class }}</td>
+                                        <td>{{ "%.2f"|format(prediction.confidence) }}%</td>
+                                        <td>
+                                            {% if prediction.predicted_class == 'BENIGN' %}
+                                            <span class="badge badge-success">Benign</span>
+                                            {% else %}
+                                            <span class="badge badge-danger">Attack</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

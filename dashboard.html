@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-background">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="dashboard-title">Welcome, {{ name }}!</h1>
+                <p class="dashboard-subtitle">SDN Intrusion Detection System Dashboard</p>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card prediction-card" onclick="showSinglePredictionForm()">
+                    <div class="card-body text-center">
+                        <i class="fas fa-network-wired prediction-icon"></i>
+                        <h3 class="card-title">Single Flow Prediction</h3>
+                        <p class="card-text">Enter network flow parameters to predict if it's benign or an attack</p>
+                        <button class="btn btn-primary">Predict</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card prediction-card" onclick="showCsvUploadForm()">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-csv prediction-icon"></i>
+                        <h3 class="card-title">CSV Log Prediction</h3>
+                        <p class="card-text">Upload a CSV file with multiple network flows to predict all at once</p>
+                        <button class="btn btn-primary">Upload & Predict</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Single Prediction Form (Hidden by default) -->
+        <div class="row mt-4" id="singlePredictionForm" style="display: none;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4>Single Flow Prediction</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ url_for('predict_single') }}" method="POST">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="flow_duration">Flow Duration</label>
+                                        <input type="number" step="any" class="form-control" id="flow_duration" name="flow_duration" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="tot_fwd_pkts">Total Forward Packets</label>
+                                        <input type="number" class="form-control" id="tot_fwd_pkts" name="tot_fwd_pkts" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="tot_bwd_pkts">Total Backward Packets</label>
+                                        <input type="number" class="form-control" id="tot_bwd_pkts" name="tot_bwd_pkts" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="fwd_pkt_len_mean">Forward Packet Length Mean</label>
+                                        <input type="number" step="any" class="form-control" id="fwd_pkt_len_mean" name="fwd_pkt_len_mean" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="bwd_pkt_len_mean">Backward Packet Length Mean</label>
+                                        <input type="number" step="any" class="form-control" id="bwd_pkt_len_mean" name="bwd_pkt_len_mean" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="flow_byts_s">Flow Bytes/s</label>
+                                        <input type="number" step="any" class="form-control" id="flow_byts_s" name="flow_byts_s" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="flow_pkts_s">Flow Packets/s</label>
+                                        <input type="number" step="any" class="form-control" id="flow_pkts_s" name="flow_pkts_s" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="flow_iat_mean">Flow IAT Mean</label>
+                                        <input type="number" step="any" class="form-control" id="flow_iat_mean" name="flow_iat_mean" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="fwd_header_len">Forward Header Length</label>
+                                        <input type="number" class="form-control" id="fwd_header_len" name="fwd_header_len" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="bwd_header_len">Backward Header Length</label>
+                                        <input type="number" class="form-control" id="bwd_header_len" name="bwd_header_len" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="flow_flags">Flow Flags</label>
+                                        <input type="number" class="form-control" id="flow_flags" name="flow_flags" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="protocol">Protocol</label>
+                                        <input type="number" class="form-control" id="protocol" name="protocol" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Predict</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CSV Upload Form (Hidden by default) -->
+        <div class="row mt-4" id="csvUploadForm" style="display: none;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4>CSV Log Prediction</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ url_for('predict_csv') }}" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="file">Upload CSV File</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="file" name="file" accept=".csv" required>
+                                    <label class="custom-file-label" for="file">Choose file</label>
+                                </div>
+                                <small class="form-text text-muted">Upload a CSV file with network flow data. The file should include a 'Flow_ID' column.</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Upload & Predict</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showSinglePredictionForm() {
+        document.getElementById('singlePredictionForm').style.display = 'block';
+        document.getElementById('csvUploadForm').style.display = 'none';
+    }
+    
+    function showCsvUploadForm() {
+        document.getElementById('singlePredictionForm').style.display = 'none';
+        document.getElementById('csvUploadForm').style.display = 'block';
+    }
+    
+    // Update the file name label when a file is selected
+    document.querySelector('.custom-file-input').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        var nextSibling = e.target.nextElementSibling;
+        nextSibling.innerText = fileName;
+    });
+</script>
+{% endblock %}

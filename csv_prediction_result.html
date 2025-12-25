@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-background">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="dashboard-title">CSV Prediction Results</h1>
+                <p class="dashboard-subtitle">Analysis of your network flows</p>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4>Prediction Summary</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Flow ID</th>
+                                        <th>Predicted Class</th>
+                                        <th>Confidence</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for result in results %}
+                                    <tr>
+                                        <td>{{ result.flow_id }}</td>
+                                        <td>{{ result.predicted_class }}</td>
+                                        <td>{{ "%.2f"|format(result.confidence) }}%</td>
+                                        <td>
+                                            {% if result.predicted_class == 'BENIGN' %}
+                                            <span class="badge badge-success">Benign</span>
+                                            {% else %}
+                                            <span class="badge badge-danger">Attack</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('prediction_details', prediction_id=result.id) }}" class="btn btn-sm btn-info">View Details</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

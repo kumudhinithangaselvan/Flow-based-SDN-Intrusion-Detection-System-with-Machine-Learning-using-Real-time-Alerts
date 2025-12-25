@@ -1,0 +1,6 @@
+Flow_ID,Flow_Duration,Tot_Fwd_Pkts,Tot_Bwd_Pkts,Fwd_Pkt_Len_Mean,Bwd_Pkt_Len_Mean,Flow_Byts/s,Flow_Pkts/s,Flow_IAT_Mean,Fwd_Header_Len,Bwd_Header_Len,Flow_Flags,Protocol
+id1,1.2,15,20,350,300,4000,30,0.02,40,40,2,6
+id2,0.15,2000,0,600,0,800000,12000,0.0001,50,20,5,6
+id3,0.3,1000,2,580,500,600000,9000,0.0003,60,20,4,6
+id4,0.8,150,4,120,130,9000,250,0.003,50,40,1,6
+id5,0.9,80,10,200,250,16000,400,0.002,40,40,3,6
